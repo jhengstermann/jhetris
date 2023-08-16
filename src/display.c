@@ -1,11 +1,6 @@
 
 #include <stdio.h>
-
-#ifdef __unix
-
-#else
-#include <windows.h>
-#endif
+#include "term.h"
 
 #include "display.h"
 
@@ -63,25 +58,12 @@ void change_color(block_type b_t) {
 #endif
 }
 
-#ifdef __unix
-void gotoxy(int x, int y) {
-    printf("\033[%d;%df", y, x);
-    fflush(stdout);
-}
-#else
-void gotoxy(int x, int y) {
-    COORD pos     = {x, y};
-    HANDLE output = GetStdHandle(STD_OUTPUT_HANDLE);
-    SetConsoleCursorPosition(output, pos);
-}
-#endif
-
 block_type current_screen[BOARD_WIDTH][BOARD_HEIGHT];
 
 int offset_x = 60, offset_y = 5;
 
 void clear_display() {
-
+    clear();
     for (int x = 0; x < BOARD_WIDTH; x++) {
         for (int y = 0; y < BOARD_HEIGHT; y++) {
 
