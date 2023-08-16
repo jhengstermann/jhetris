@@ -2,21 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-
-#ifdef __unix
-#include <ncurses.h>
-#define GET_KEY() getch()
-#else
-#include <conio.h>
-int win_GET_KEY() {
-    if (kbhit())
-        return getch();
-    else
-        return -1;
-}
-#define GET_KEY() win_GET_KEY()
-#endif
-
+#include "term.h"
 #include "board.h"
 
 int main() {
@@ -65,7 +51,7 @@ int main() {
         control = NO_INPUT;
     }
     clear();
-    move(1, 1);
+    gotoxy(1, 1);
     printf("game over, score: %d\n", score);
 
     /* end of manual Game */
