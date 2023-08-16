@@ -2,10 +2,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-#include <ncurses.h>
-
+#include "term.h"
 #include "board.h"
-
 
 int main() {
 
@@ -17,13 +15,16 @@ int main() {
     /*
      * Manual Game
      */
+
+#ifdef __unix
     // setup for ncurses
     WINDOW *w = initscr();
     cbreak();
     nodelay(w, TRUE);
+#endif
 
     char c;
-    c = getch();
+    c = GET_KEY();
 
     input_t control = NO_INPUT;
 
@@ -33,24 +34,24 @@ int main() {
 
     while (1) {
         c = getch();
-        if (c != ERR) {
+        if (c != -1) {
             if (c == 'a')
                 control = LEFT;
             else if (c == 'd')
                 control = RIGHT;
-            else if (c == 'w') 
+            else if (c == 'w')
                 control = ROTATE;
-            else if (c == 's') 
+            else if (c == 's')
                 control = DOWN;
         }
         if (!board_update(control, &score)) {
             break;
         }
-        
+
         control = NO_INPUT;
     }
     clear();
-    move(1,1);
+    gotoxy(1, 1);
     printf("game over, score: %d\n", score);
 
     /* end of manual Game */
