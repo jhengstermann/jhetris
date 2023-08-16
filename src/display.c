@@ -63,7 +63,10 @@ block_type current_screen[BOARD_WIDTH][BOARD_HEIGHT];
 int offset_x = 60, offset_y = 5;
 
 void clear_display() {
+#ifndef __unix
     clear();
+#endif
+
     for (int x = 0; x < BOARD_WIDTH; x++) {
         for (int y = 0; y < BOARD_HEIGHT; y++) {
 
