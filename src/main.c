@@ -9,8 +9,8 @@ int main() {
 
     printf("hello world\n");
 
-    // time_t t;
-    // srand((unsigned) time(&t));
+    time_t t;
+    srand((unsigned) time(&t));
 
     /*
      * Manual Game
