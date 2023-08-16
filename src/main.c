@@ -2,10 +2,22 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+
+#ifdef __unix
 #include <ncurses.h>
+#define GET_KEY() getch()
+#else
+#include <conio.h>
+int win_GET_KEY() {
+    if (kbhit())
+        return getch();
+    else
+        return -1;
+}
+#define GET_KEY() win_GET_KEY()
+#endif
 
 #include "board.h"
-
 
 int main() {
 
@@ -17,13 +29,16 @@ int main() {
     /*
      * Manual Game
      */
+
+#ifdef __unix
     // setup for ncurses
     WINDOW *w = initscr();
     cbreak();
     nodelay(w, TRUE);
+#endif
 
     char c;
-    c = getch();
+    c = GET_KEY();
 
     input_t control = NO_INPUT;
 
@@ -33,24 +48,24 @@ int main() {
 
     while (1) {
         c = getch();
-        if (c != ERR) {
+        if (c != -1) {
             if (c == 'a')
                 control = LEFT;
             else if (c == 'd')
                 control = RIGHT;
-            else if (c == 'w') 
+            else if (c == 'w')
                 control = ROTATE;
-            else if (c == 's') 
+            else if (c == 's')
                 control = DOWN;
         }
         if (!board_update(control, &score)) {
             break;
         }
-        
+
         control = NO_INPUT;
     }
     clear();
-    move(1,1);
+    move(1, 1);
     printf("game over, score: %d\n", score);
 
     /* end of manual Game */

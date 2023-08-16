@@ -1,7 +1,11 @@
 
 #include <stdio.h>
 
-#include <ncurses.h>
+#ifdef __unix
+
+#else
+#include <windows.h>
+#endif
 
 #include "display.h"
 
@@ -19,6 +23,7 @@
     } while (0)
 
 void change_color(block_type b_t) {
+#ifdef __unix
     switch (b_t) {
     case EMPTY_TILE:
         printf("\033[39m");
@@ -55,12 +60,21 @@ void change_color(block_type b_t) {
     default:
         break;
     }
+#endif
 }
 
+#ifdef __unix
 void gotoxy(int x, int y) {
     printf("\033[%d;%df", y, x);
     fflush(stdout);
 }
+#else
+void gotoxy(int x, int y) {
+    COORD pos     = {x, y};
+    HANDLE output = GetStdHandle(STD_OUTPUT_HANDLE);
+    SetConsoleCursorPosition(output, pos);
+}
+#endif
 
 block_type current_screen[BOARD_WIDTH][BOARD_HEIGHT];
 
@@ -111,7 +125,6 @@ void draw_block(block b) {
         // printf("O");
         C_PRINT(b.type, '0');
 #endif
-
     }
     gotoxy(0, 0);
 }
@@ -125,7 +138,6 @@ void undraw_block(block b) {
         // printf("%c", '.');
         C_PRINT(EMPTY_TILE, '.');
 #endif
-
     }
     gotoxy(0, 0);
 }
